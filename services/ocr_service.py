@@ -1,9 +1,4 @@
 import pytesseract
-print(pytesseract.pytesseract.tesseract_cmd)
-# CAMINHO DO TESSERACT
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
 
 def extrair_texto(paginas):
 

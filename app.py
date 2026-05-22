@@ -30,7 +30,7 @@ load_dotenv()
 USUARIO_ADMIN = "admin"
 SENHA_ADMIN = "1234"
 
-POPPLER_PATH = r"poppler\poppler-26.02.0\Library\bin"
+POPPLER_PATH = None
 
 UPLOAD_FOLDER = "uploads"
 
@@ -224,8 +224,7 @@ def upload():
     # ============================================
 
     paginas_pdf = convert_from_path(
-        caminho_pdf,
-        poppler_path=POPPLER_PATH
+    caminho_pdf
     )
 
     total_paginas = len(paginas_pdf)
