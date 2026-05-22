@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Biblioteca Digital</title>
+
+<style>
+
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+  background:#f5f5f5;
+  color:#222;
+}
+
+/* HEADER */
+header{
+  background:#8B0000;
+  color:white;
+  padding:20px 40px;
+}
+
+.header-content{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  flex-wrap:wrap;
+  gap:15px;
+}
+
+.search-form{
+  display:flex;
+  gap:10px;
+}
+
+.search-form input{
+  padding:10px;
+  border:none;
+  border-radius:6px;
+  width:250px;
+}
+
+.search-form button{
+  padding:10px 15px;
+  border:none;
+  background:white;
+  color:#8B0000;
+  font-weight:bold;
+  border-radius:6px;
+}
+
+/* HERO */
+.hero{
+  height:250px;
+  background:linear-gradient(rgba(0,0,0,0.6),rgba(0,0,0,0.6)),
+  url('https://images.unsplash.com/photo-1521587760476-6c12a4b040da');
+  background-size:cover;
+  color:white;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* GRID */
+.container{
+  width:90%;
+  margin:auto;
+  margin-top:-40px;
+}
+
+/* ACERVO GRID */
+.files-box{
+  display:grid;
+  grid-template-columns:repeat(auto-fit, minmax(260px, 1fr));
+  gap:20px;
+}
+
+/* CARD FIXO */
+.file-item{
+  background:white;
+  border-radius:12px;
+  padding:15px;
+  box-shadow:0 4px 12px rgba(0,0,0,0.08);
+
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+
+  height:360px;
+  overflow:hidden;
+
+  transition:0.2s;
+}
+
+.file-item:hover{
+  transform:translateY(-5px);
+  box-shadow:0 8px 20px rgba(0,0,0,0.12);
+}
+
+/* THUMB WRAPPER (IMPORTANTE) */
+.thumb-wrapper{
+  width:100%;
+  height:180px;
+  border-radius:8px;
+  overflow:hidden;
+  background:#eee;
+
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* IMG PADRONIZADA */
+.thumb{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+/* TITLE */
+.file-item h4 a{
+  text-decoration:none;
+  color:#8B0000;
+}
+
+/* ACTIONS */
+.actions{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.tag{
+  background:#8B0000;
+  color:white;
+  padding:5px 10px;
+  border-radius:20px;
+  font-size:12px;
+}
+
+.btn-pdf{
+  background:#cc5500;
+  color:white;
+  padding:6px 10px;
+  border-radius:6px;
+  text-decoration:none;
+  font-size:12px;
+}
+
+/* EMPTY */
+.empty{
+  padding:20px;
+  text-align:center;
+  color:#666;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<div class="header-content">
+
+  <h1>Biblioteca Digital</h1>
+
+  <form action="/" method="GET" class="search-form">
+    <input type="text" name="busca" placeholder="Pesquisar...">
+    <button>Buscar</button>
+  </form>
+
+</div>
+
+</header>
+
+<section class="hero">
+  <h2>Digitalização Inteligente</h2>
+  <p>OCR + Resumo automático com IA</p>
+</section>
+
+<main class="container">
+
+<section class="files-box">
+
+{% if documentos|length == 0 %}
+  <div class="empty">
+    Nenhum documento encontrado.
+  </div>
+{% endif %}
+
+{% for doc in documentos %}
+
+<div class="file-item">
+
+  <!-- THUMB CORRIGIDA -->
+  <div class="thumb-wrapper">
+    <img class="thumb" src="/uploads/{{ doc.caminho_thumb }}">
+  </div>
+
+  <h4>
+    <a href="/documento/{{ doc.id }}">
+      {{ doc.titulo }}
+    </a>
+  </h4>
+
+  <p>
+    {{ doc.resumo[:120] }}...
+  </p>
+
+  <div class="actions">
+
+    <span class="tag">Processado</span>
+
+    <a href="/pdf/{{ doc.id }}" target="_blank" class="btn-pdf">
+      📄 PDF
+    </a>
+
+  </div>
+
+</div>
+
+{% endfor %}
+
+</section>
+
+</main>
+
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ documento.nome_arquivo }}</title>
+
+<style>
+
+body{
+  font-family:Arial;
+  background:#f5f5f5;
+  margin:0;
+}
+
+.container{
+  width:80%;
+  margin:40px auto;
+  background:white;
+  padding:25px;
+  border-radius:12px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.1);
+}
+
+.thumb{
+  width:100%;
+  max-height:350px;
+  object-fit:cover;
+  border-radius:10px;
+}
+
+h1{
+  color:#8B0000;
+  margin-top:20px;
+}
+
+p{
+  line-height:1.6;
+  color:#333;
+}
+
+/* BOTÕES */
+.actions{
+  margin-top:20px;
+  display:flex;
+  gap:10px;
+  flex-wrap:wrap;
+}
+
+.btn{
+  padding:10px 15px;
+  border-radius:8px;
+  text-decoration:none;
+  font-weight:bold;
+  color:white;
+  cursor:pointer;
+  border:none;
+}
+
+.btn-pdf{
+  background:#cc5500;
+}
+
+.btn-back{
+  background:#555;
+}
+
+.btn-ocr{
+  background:#8B0000;
+}
+
+/* PAINEL OCR */
+.ocr-panel{
+  max-height:0;
+  overflow:hidden;
+  transition:0.4s ease;
+  background:#111;
+  color:#eee;
+  margin-top:15px;
+  border-radius:10px;
+}
+
+.ocr-panel.open{
+  max-height:500px;
+  padding:15px;
+  overflow:auto;
+}
+
+.ocr-title{
+  font-size:16px;
+  margin-bottom:10px;
+  color:#fff;
+  border-bottom:1px solid #333;
+  padding-bottom:5px;
+}
+
+pre{
+  white-space:pre-wrap;
+  font-size:13px;
+  line-height:1.5;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+  {% if documento.caminho_thumb %}
+    <img class="thumb" src="/uploads/{{ documento.caminho_thumb }}">
+  {% endif %}
+
+  <h1>{{ documento.nome_arquivo }}</h1>
+
+  <p>{{ documento.resumo }}</p>
+
+  <div class="actions">
+
+    <a class="btn btn-pdf" href="/pdf/{{ documento.id }}" target="_blank">
+      📄 Ver PDF
+    </a>
+
+    <button class="btn btn-ocr" onclick="toggleOCR()">
+      📑 OCR Completo
+    </button>
+
+    <a class="btn btn-back" href="/">
+      ← Voltar
+    </a>
+
+  </div>
+
+  <!-- PAINEL OCR -->
+  <div id="ocrPanel" class="ocr-panel">
+
+    <div class="ocr-title">
+      Texto extraído (OCR completo)
+    </div>
+
+    <pre>{{ documento.texto_ocr }}</pre>
+
+  </div>
+
+</div>
+
+<script>
+function toggleOCR(){
+  const panel = document.getElementById("ocrPanel");
+  panel.classList.toggle("open");
+}
+</script>
+
+</body>
+</html>

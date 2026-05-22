@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>
+    Gerenciar Documentos
+  </title>
+
+  <style>
+    .btn-pdf{
+      background:#cc5500;
+    }
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+      font-family:Arial, Helvetica, sans-serif;
+    }
+
+    body{
+      background:#f4f4f4;
+    }
+
+    .sidebar{
+
+      position:fixed;
+
+      width:250px;
+
+      height:100vh;
+
+      background:#8B0000;
+
+      color:white;
+
+      padding:30px 20px;
+    }
+
+    .sidebar h2{
+
+      margin-bottom:40px;
+
+      font-size:24px;
+    }
+
+    .menu{
+
+      display:flex;
+
+      flex-direction:column;
+
+      gap:15px;
+    }
+
+    .menu a{
+
+      color:white;
+
+      text-decoration:none;
+
+      padding:12px;
+
+      border-radius:8px;
+
+      transition:0.3s;
+    }
+
+    .menu a:hover{
+      background:rgba(255,255,255,0.1);
+    }
+
+    .main{
+
+      margin-left:250px;
+
+      padding:40px;
+    }
+
+    .page-title{
+
+      margin-bottom:30px;
+    }
+
+    .page-title h1{
+      color:#8B0000;
+    }
+
+    .table-box{
+
+      background:white;
+
+      padding:25px;
+
+      border-radius:14px;
+
+      box-shadow:0 4px 15px rgba(0,0,0,0.08);
+    }
+
+    table{
+
+      width:100%;
+
+      border-collapse:collapse;
+    }
+
+    table th{
+
+      background:#8B0000;
+
+      color:white;
+
+      text-align:left;
+
+      padding:14px;
+    }
+
+    table td{
+
+      padding:14px;
+
+      border-bottom:1px solid #ddd;
+    }
+
+    .status{
+
+      background:#8B0000;
+
+      color:white;
+
+      padding:6px 12px;
+
+      border-radius:20px;
+
+      font-size:12px;
+    }
+
+    .btn{
+
+      padding:8px 14px;
+
+      border-radius:8px;
+
+      text-decoration:none;
+
+      font-size:14px;
+
+      color:white;
+
+      margin-right:5px;
+    }
+
+    .btn-view{
+      background:#0066cc;
+    }
+
+    .btn-delete{
+      background:#cc0000;
+    }
+
+    .empty{
+
+      padding:30px;
+
+      text-align:center;
+
+      color:#666;
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <aside class="sidebar">
+
+    <h2>
+      Sistema de Acervo Digital
+    </h2>
+
+    <nav class="menu">
+
+      <a href="/admin">
+        Dashboard
+      </a>
+
+      <a href="/admin/upload">
+        Upload PDF
+      </a>
+
+      <a href="/admin/documentos">
+        Documentos
+      </a>
+
+      <a href="/">
+        Site Público
+      </a>
+
+    </nav>
+
+  </aside>
+
+  <main class="main">
+
+    <div class="page-title">
+
+      <h1>
+        Gerenciar Documentos
+      </h1>
+
+    </div>
+
+    <div class="table-box">
+
+      {% if documentos|length == 0 %}
+
+        <div class="empty">
+
+          Nenhum documento encontrado.
+
+        </div>
+
+      {% else %}
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>ID</th>
+
+            <th>Arquivo</th>
+
+            <th>Data</th>
+
+            <th>Status</th>
+
+            <th>Ações</th>
+
+          </tr>
+
+        </thead>
+
+        <tbody>
+
+          {% for doc in documentos %}
+
+          <tr>
+
+            <td>
+              {{ doc.id }}
+            </td>
+
+            <td>
+              {{ doc.nome_arquivo }}
+            </td>
+
+            <td>
+              {{ doc.data_upload.strftime('%d/%m/%Y %H:%M') }}
+            </td>
+
+            <td>
+
+              <span class="status">
+
+                Processado
+
+              </span>
+
+            </td>
+
+            <td>
+
+              <a
+                href="/documento/{{ doc.id }}"
+                class="btn btn-view"
+              >
+                Abrir
+              </a>
+
+              <a
+                href="/pdf/{{ doc.id }}"
+                target="_blank"
+                class="btn btn-pdf"
+              >
+                📄 PDF
+              </a>
+
+              <a
+                href="/admin/delete/{{ doc.id }}"
+                class="btn btn-delete"
+              >
+                Excluir
+              </a>
+
+            </td>
+
+          </tr>
+
+          {% endfor %}
+
+        </tbody>
+
+      </table>
+
+      {% endif %}
+
+    </div>
+
+  </main>
+
+</body>
+
+</html>
