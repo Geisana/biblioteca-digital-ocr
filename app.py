@@ -7,6 +7,7 @@ from flask import (
     send_file,
     send_from_directory
 )
+import platform
 
 from dotenv import load_dotenv
 
@@ -30,7 +31,32 @@ load_dotenv()
 USUARIO_ADMIN = "admin"
 SENHA_ADMIN = "1234"
 
-POPPLER_PATH = None
+import platform
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
+if platform.system() == "Windows":
+
+    POPPLER_PATH = os.path.join(
+        BASE_DIR,
+        "poppler",
+        "poppler-26.02.0",
+        "Library",
+        "bin"
+    )
+
+else:
+
+    POPPLER_PATH = None
+
+
+print("Sistema:", platform.system())
+print("BASE_DIR:", BASE_DIR)
+print("POPPLER_PATH:", POPPLER_PATH)
+
+if POPPLER_PATH:
+    print("EXISTE:", os.path.exists(POPPLER_PATH))
+
 
 UPLOAD_FOLDER = "uploads"
 
@@ -224,8 +250,9 @@ def upload():
     # ============================================
 
     paginas_pdf = convert_from_path(
-    caminho_pdf
-    )
+    caminho_pdf,
+    poppler_path=POPPLER_PATH
+)
 
     total_paginas = len(paginas_pdf)
 
