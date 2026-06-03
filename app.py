@@ -8,7 +8,7 @@ from flask import (
     send_from_directory
 )
 import platform
-
+from services.metrics import calcular_metricas
 from dotenv import load_dotenv
 
 from flask_sqlalchemy import SQLAlchemy
@@ -146,10 +146,31 @@ class Documento(db.Model):
         db.Integer
     )
 
+    tempo_total_ocr = db.Column(
+        db.Float
+    )
+
+    tempo_medio_pagina = db.Column(
+        db.Float
+    )
+
+    cer = db.Column(
+        db.Float
+    )
+
+    wer = db.Column(
+        db.Float
+    )
+
+    taxa_sucesso = db.Column(
+        db.Float
+    )
+
     data_upload = db.Column(
         db.DateTime,
         server_default=db.func.now()
     )
+
 
     paginas = db.relationship(
         "Pagina",
@@ -233,7 +254,7 @@ def upload():
 
     if arquivo.filename == "":
         return "Nenhum arquivo enviado"
-
+    
     # ============================================
     # SALVAR PDF
     # ============================================
@@ -246,18 +267,18 @@ def upload():
     arquivo.save(caminho_pdf)
 
     # ============================================
-    # CONVERTER PDF
+    # CONVERTER PDF EM IMAGENS
     # ============================================
 
     paginas_pdf = convert_from_path(
-    caminho_pdf,
-    poppler_path=POPPLER_PATH
-)
+        caminho_pdf,
+        poppler_path=POPPLER_PATH
+    )
 
     total_paginas = len(paginas_pdf)
 
     # ============================================
-    # THUMBNAIL
+    # CRIAR THUMBNAIL
     # ============================================
 
     pagina1 = paginas_pdf[0]
@@ -275,12 +296,53 @@ def upload():
     )
 
     # ============================================
-    # OCR TOTAL
+    # OCR
     # ============================================
 
-    texto_total = extrair_texto(
+    resultado_ocr = extrair_texto(
         paginas_pdf
     )
+
+    texto_total = resultado_ocr["texto"]
+
+    tempo_total = resultado_ocr["tempo_total"]
+
+    tempo_medio = resultado_ocr["tempo_medio"]
+
+    # ============================================
+    # GROUND TRUTH
+    # ============================================
+
+    nome_txt = arquivo.filename.replace(
+        ".pdf",
+        ".txt"
+    )
+
+    caminho_txt = os.path.join(
+        "dataset",
+        nome_txt
+    )
+
+    metricas = {
+        "cer": None,
+        "wer": None,
+        "sucesso": None
+    }
+
+    if os.path.exists(caminho_txt):
+
+        with open(
+            caminho_txt,
+            "r",
+            encoding="utf-8"
+        ) as f:
+
+            ground_truth = f.read()
+
+        metricas = calcular_metricas(
+            ground_truth,
+            texto_total
+        )
 
     # ============================================
     # RESUMO IA
@@ -289,6 +351,7 @@ def upload():
     resumo = gerar_resumo(
         texto_total
     )
+    
 
     # ============================================
     # SALVAR DOCUMENTO
@@ -296,29 +359,44 @@ def upload():
 
     doc = Documento(
 
-        nome_arquivo=arquivo.filename,
+    nome_arquivo=arquivo.filename,
 
-        titulo=titulo,
+    titulo=titulo,
 
-        data_documento=data_documento,
+    data_documento=data_documento,
 
-        autoria=autoria,
+    autoria=autoria,
 
-        caminho_pdf=caminho_pdf,
+    caminho_pdf=caminho_pdf,
 
-        caminho_thumb=nome_thumb,
+    caminho_thumb=nome_thumb,
 
-        texto_ocr=texto_total,
+    texto_ocr=texto_total,
 
-        resumo=resumo,
+    resumo=resumo,
 
-        total_paginas=total_paginas
-    )
+    total_paginas=total_paginas,
+
+    tempo_total_ocr=tempo_total,
+
+    tempo_medio_pagina=tempo_medio,
+
+    cer=metricas["cer"],
+
+    wer=metricas["wer"],
+
+    taxa_sucesso=metricas["sucesso"]
+)
+    print("Salvando documento...")
+    print(doc.nome_arquivo)
+    print(doc.cer)
+    print(doc.wer)
 
     db.session.add(doc)
 
     db.session.commit()
-
+    print("Documento salvo!")
+    
     # ============================================
     # SALVAR PÁGINAS
     # ============================================
@@ -345,6 +423,9 @@ def upload():
             [pagina]
         )
 
+        if isinstance(texto_pagina, dict):
+            texto_pagina = texto_pagina["texto"]
+
         pagina_db = Pagina(
 
             documento_id=doc.id,
@@ -363,7 +444,6 @@ def upload():
     return redirect(
         "/admin/documentos"
     )
-
 # ============================================
 # DOCUMENTO
 # ============================================
