@@ -171,6 +171,10 @@ class Documento(db.Model):
         server_default=db.func.now()
     )
 
+    pipeline = db.Column(
+    db.String(150)
+)
+
 
     paginas = db.relationship(
         "Pagina",
@@ -178,6 +182,7 @@ class Documento(db.Model):
         lazy=True,
         cascade="all, delete-orphan"
     )
+
 
 # ============================================
 # MODELO PAGINA
@@ -299,10 +304,12 @@ def upload():
     # ============================================
     # OCR
     # ============================================
+    pipeline = "tesseract_puro"
+    modelo = "tesseract"
 
     resultado_ocr = ocr_service.executar(
     paginas_pdf,
-    modelo="tesseract"
+    modelo= "tesseract"
         )
 
     texto_total = resultado_ocr["texto"]
@@ -387,7 +394,9 @@ def upload():
 
     wer=metricas["wer"],
 
-    taxa_sucesso=metricas["sucesso"]
+    taxa_sucesso=metricas["sucesso"],
+
+    pipeline=pipeline
 )
     print("Salvando documento...")
     print(doc.nome_arquivo)
@@ -423,7 +432,7 @@ def upload():
 
         texto_pagina = ocr_service.executar(
             [pagina],
-            modelo="tesseract"
+            modelo= modelo
         )
 
         if isinstance(texto_pagina, dict):
