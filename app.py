@@ -19,7 +19,7 @@ from functools import wraps
 
 import os
 
-from services.ocr_service import extrair_texto
+from services.ocr_service import OCRService
 from services.ia_service import gerar_resumo
 
 # ============================================
@@ -240,6 +240,7 @@ def home():
 # ============================================
 # UPLOAD
 # ============================================
+ocr_service = OCRService()
 
 @app.route("/upload", methods=["POST"])
 def upload():
@@ -299,9 +300,10 @@ def upload():
     # OCR
     # ============================================
 
-    resultado_ocr = extrair_texto(
-        paginas_pdf
-    )
+    resultado_ocr = ocr_service.executar(
+    paginas_pdf,
+    modelo="tesseract"
+        )
 
     texto_total = resultado_ocr["texto"]
 
@@ -419,8 +421,9 @@ def upload():
             "JPEG"
         )
 
-        texto_pagina = extrair_texto(
-            [pagina]
+        texto_pagina = ocr_service.executar(
+            [pagina],
+            modelo="tesseract"
         )
 
         if isinstance(texto_pagina, dict):
@@ -444,6 +447,8 @@ def upload():
     return redirect(
         "/admin/documentos"
     )
+
+
 # ============================================
 # DOCUMENTO
 # ============================================
