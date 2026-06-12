@@ -1,5 +1,5 @@
-from ocr.factory import (
-    OCRFactory
+from pipelines.factory import (
+    PipelineFactory
 )
 
 class OCRService:
@@ -7,13 +7,13 @@ class OCRService:
     def executar(
         self,
         paginas,
-        modelo="tesseract"
+        pipeline="tesseract"
     ):
 
-        ocr = OCRFactory.criar(
-            modelo
+        pipe = PipelineFactory.criar(
+            pipeline
         )
 
-        return ocr.executar(
+        return pipe.executar(
             paginas
         )
