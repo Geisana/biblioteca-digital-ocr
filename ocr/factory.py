@@ -8,7 +8,7 @@ class OCRFactory:
 
         motores = {
             "tesseract": TesseractOCR,
-            #"easyocr": EasyOCR
+             #"easyocr": EasyOCR
         }
 
         return motores[nome]()
