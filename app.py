@@ -309,7 +309,7 @@ def upload():
 
     resultado_ocr = ocr_service.executar(
     paginas_pdf,
-    modelo= "tesseract"
+    pipeline = pipeline
         )
 
     texto_total = resultado_ocr["texto"]
@@ -432,7 +432,7 @@ def upload():
 
         texto_pagina = ocr_service.executar(
             [pagina],
-            modelo= modelo
+            pipeline= pipeline
         )
 
         if isinstance(texto_pagina, dict):

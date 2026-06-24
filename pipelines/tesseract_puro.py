@@ -1,12 +1,15 @@
-from ocr.tesseract.engine import (
-    TesseractOCR
-)
+from ocr.factory import OCRFactory
 
 class TesseractPuro:
 
-    def executar(self, paginas):
+    def executar(
+        self,
+        paginas
+    ):
 
-        ocr = TesseractOCR()
+        ocr = OCRFactory.criar(
+            "tesseract"
+        )
 
         return ocr.executar(
             paginas
