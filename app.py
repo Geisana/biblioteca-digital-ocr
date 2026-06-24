@@ -304,7 +304,7 @@ def upload():
     # ============================================
     # OCR
     # ============================================
-    pipeline = "tesseract_puro"
+    pipeline = "tesseract_preprocessado"
     modelo = "tesseract"
 
     resultado_ocr = ocr_service.executar(
