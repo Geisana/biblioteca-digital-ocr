@@ -7,13 +7,11 @@ class OCRService:
     def executar(
         self,
         paginas,
-        pipeline="tesseract"
+        pipeline
     ):
 
-        pipe = PipelineFactory.criar(
-            pipeline
-        )
+        
 
-        return pipe.executar(
+        return pipeline.processar(
             paginas
         )

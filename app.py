@@ -7,6 +7,7 @@ from flask import (
     send_file,
     send_from_directory
 )
+from pipelines.factory import PipelineFactory
 import platform
 from services.metrics import calcular_metricas
 from dotenv import load_dotenv
@@ -304,7 +305,11 @@ def upload():
     # ============================================
     # OCR
     # ============================================
-    pipeline = "tesseract_preprocessado"
+    codigo_pipeline = request.form.get("pipeline")
+    print("PIPELINE RECEBIDO:", codigo_pipeline)
+
+    codigo_pipeline = request.form.get("pipeline")
+    pipeline = PipelineFactory.criar(codigo_pipeline)
     modelo = "tesseract"
 
     resultado_ocr = ocr_service.executar(
@@ -396,7 +401,7 @@ def upload():
 
     taxa_sucesso=metricas["sucesso"],
 
-    pipeline=pipeline
+    pipeline=pipeline.nome
 )
     print("Salvando documento...")
     print(doc.nome_arquivo)
@@ -498,7 +503,8 @@ def admin():
 def admin_upload():
 
     return render_template(
-        "admin/upload.html"
+        "admin/upload.html",
+        pipelines=PipelineFactory.listar()
     )
 
 # ============================================

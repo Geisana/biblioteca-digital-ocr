@@ -9,6 +9,17 @@
 <title>Cadastrar de Documento</title>
 
 <style>
+  select{
+  padding:12px;
+  border:1px solid #ddd;
+  border-radius:10px;
+  outline:none;
+}
+
+select:focus{
+  border-color:#8B0000;
+  box-shadow:0 0 5px rgba(139,0,0,.3);
+}
 
 *{
   margin:0;
@@ -194,6 +205,22 @@ button:hover{
 
       <label>Autoria</label>
       <input type="text" name="autoria" placeholder="Ex: Autor desconhecido">
+
+      <label>Pipeline de Processamento</label>
+
+          <select name="pipeline" required>
+
+          {% for pipeline in pipelines %}
+
+              <option value="{{ pipeline.codigo }}">
+
+                  {{ pipeline.nome }}
+
+              </option>
+
+          {% endfor %}
+
+          </select>
 
       <label>Arquivo PDF</label>
       <div class="file-box">
