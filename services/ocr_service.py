@@ -13,5 +13,6 @@ class OCRService:
         
 
         return pipeline.processar(
-            paginas
+            paginas, 
+            
         )

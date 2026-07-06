@@ -279,6 +279,7 @@ def upload():
 
     paginas_pdf = convert_from_path(
         caminho_pdf,
+        dpi=300,
         poppler_path=POPPLER_PATH
     )
 
@@ -301,6 +302,9 @@ def upload():
         caminho_thumb,
         "JPEG"
     )
+    import cv2
+
+    
 
     # ============================================
     # OCR
@@ -404,6 +408,8 @@ def upload():
     pipeline=pipeline.nome
 )
     print("Salvando documento...")
+    print(caminho_txt)
+    print(os.path.exists(caminho_txt))
     print(doc.nome_arquivo)
     print(doc.cer)
     print(doc.wer)
